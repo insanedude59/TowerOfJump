@@ -37,9 +37,9 @@ Section1:CreateToggle("Auto Tp to Top", nil, function(value)
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(game:GetService("Workspace").Storage.End.WinBrick.Position) 
         end
 end)
-Section1:CreateButton("Destroy all Kill Parts", nil, function()
+Section1:CreateButton("Destroy all Kill Parts", function()
     for i,v in pairs(game:GetService("Workspace"):GetDescendants()) do
-    if  v.Name == "kills" then
+    if  v.Name == "TouchInterest" and v.Parent.Name == "Part" then
         v.Parent:Destroy()
         end
     end
@@ -49,7 +49,20 @@ Section2:CreateSlider("Walkspeed",16,250,nil,true,function(speed)
     game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = speed
 end)
 Section2:CreateSlider("JumpPower",50,500,nil,true,function(jumppower)
-    game.Players.LocalPlayer.Character.Humanoid.JumpPower = jumppower
+    local mt = getrawmetatable(game)
+setreadonly(mt, false)
+local old = mt.__newindex
+_G.ws = 500
+
+mt.__newindex = newcclosure(function(o, k, v)
+  if tostring(o) == "Humanoid" and tostring(k) == "JumpPower" then
+    return old(o, k, _G.ws)
+  end
+ 
+  return old(o, k, v)
+ 
+ 
+end)
 end)
 Section2:CreateToggle("B to Fly",nil,function(val)
     tog = val 
